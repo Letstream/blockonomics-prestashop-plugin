@@ -20,90 +20,94 @@
 
 {block name="content"}
 
-<div ng-app="BlockonomicsApp">
-  <div ng-controller="CheckoutController" ng-init="init({$status|escape:'htmlall':'UTF-8'},
-  '{$addr|escape:'htmlall':'UTF-8'}', {$timestamp|escape:'htmlall':'UTF-8'},
-  '{$base_websocket_url|escape:'htmlall':'UTF-8'}' ,'{$redirect_link|escape:'htmlall':'UTF-8'}', {$timeperiod|escape:'htmlall':'UTF-8'}, {$time_remaining|escape:'htmlall':'UTF-8'})">
+<div id="blockonomics_checkout">
     <div class="bnomics-order-container">
-      <!-- Heading row -->
-      <div class="bnomics-order-heading">
-        <div class="bnomics-order-heading-wrapper">
-          <div class="bnomics-order-id">
-            <span class="bnomics-order-number" ng-cloak>{l s='Order #' mod='blockonomics' } {$id_order|escape:'htmlall':'UTF-8'}</span>
-          </div>
-        </div>
-      </div>
-      <!-- Payment Expired -->
-      <div class="bnomics-order-expired-wrapper" ng-show="status == -3" ng-cloak>
-        <h2>{l s='Payment Expired' mod='blockonomics' }</h2><br>
-        <p><a ng-click="try_again_click()">{l s='Click here to try again' mod='blockonomics' }</a></p>
-      </div>
-      <!-- Payment Error -->
-      <div class="bnomics-order-error-wrapper" ng-show="status == -2" ng-cloak>
-        <h2>{l s='Paid order BTC amount is less than expected. Contact merchant' mod='blockonomics' }</h2>
-      </div>
-      <!-- Blockonomics Checkout Panel -->
-      <div class="bnomics-order-panel" ng-show="status == -1" ng-cloak>
-        <div class="bnomics-order-info">
-          <div class="bnomics-bitcoin-pane">
-            <div class="bnomics-btc-info">
-              <!-- Left Side -->
-              <!-- QR and Open in wallet -->
-              <div class="bnomics-qr-code">
-                <div class="bnomics-qr">
-                  <a href="{$crypto.uri|escape:'htmlall':'UTF-8'}:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" target="_blank">
-                    <qrcode data="{$crypto.uri|escape:'htmlall':'UTF-8'}:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" size="160" version="6">
-                      <canvas class="qrcode"></canvas>
-                    </qrcode>
-                  </a>
-                </div>
-                <div class="bnomics-qr-code-hint"><a href="{$crypto.uri|escape:'htmlall':'UTF-8'}:{$addr|escape:'htmlall':'UTF-8'}?amount={$bits|escape:'htmlall':'UTF-8'}" target="_blank">{l s='Open in wallet' mod='blockonomics' }</a></div>
-              </div>
-              <!-- Right Side -->
-              <div class="bnomics-amount">
-                <div class="bnomics-bg">
-                  <!-- Order Amounts -->
-                  <div class="bnomics-amount">
-                    <div class="bnomics-amount-text" ng-hide="amount_copyshow" ng-cloak>
-                      {l s='To pay, send exactly' mod='blockonomics' }
-                    </div>
-                    <div class="bnomics-copy-amount-text" ng-show="amount_copyshow" ng-cloak>{l s='Copied to clipboard' mod='blockonomics' }</div>
-                    <ul ng-click="blockonomics_amount_click()" id="bnomics-amount-input" class="bnomics-amount-input">
-                        <li id="bnomics-amount-copy">{$bits|escape:'htmlall':'UTF-8'}</li>
-                        <li>{$crypto.code|escape:'htmlall':'UTF-8'}</li>
-                        <li class="bnomics-grey"> ≈ </li>
-                        <li class="bnomics-grey">{$value|escape:'htmlall':'UTF-8'}</li>
-                        <li class="bnomics-grey">{$currency_iso_code|escape:'htmlall':'UTF-8'}</li>
-                    </ul>
-                  </div>
-                  <!-- Order Address -->
-                  <div class="bnomics-address">
-                    <div class="bnomics-address-text" ng-hide="address_copyshow" ng-cloak>{l s='To this' mod='blockonomics' } {$crypto.name|escape:'htmlall':'UTF-8'} {l s=' address' mod='blockonomics' }</div>
-                    <div class="bnomics-copy-address-text" ng-show="address_copyshow" ng-cloak>{l s='Copied to clipboard' mod='blockonomics' }</div>
-                    <ul ng-click="blockonomics_address_click()" id="bnomics-address-input" class="bnomics-address-input">
-                          <li id="bnomics-address-copy">{$addr|escape:'htmlall':'UTF-8'}</li>
-                    </ul>
-                  </div>
-                  <!-- Order Countdown Timer -->
-                  <div class="bnomics-progress-bar-wrapper">
-                    <div class="bnomics-progress-bar-container">
-                      <div class="bnomics-progress-bar" style="width: [[progress]]%;"></div>
-                    </div>
-                  </div>
-                  <span class="ng-cloak bnomics-time-left">[[clock*1000 | date:'mm:ss' : 'UTC']] {l s=' min' mod='blockonomics' }</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Blockonomics How to pay + Credit -->
-      <div class="bnomics-powered-by">
-        <a href="https://blog.blockonomics.co/how-to-pay-a-bitcoin-invoice-abf4a04d041c" target="_blank">{l s='How do I pay? | Check reviews of this shop' mod='blockonomics' }</a><br>
-        <div class="bnomics-powered-by-text bnomics-grey">{l s='Powered by Blockonomics' mod='blockonomics' }</div>
-      </div>
-    </div>
-  </div>
-</div>
 
+        <!-- Spinner -->
+        <div class="bnomics-spinner-wrapper">
+            <div class="bnomics-spinner"></div>
+        </div>
+
+        <!-- Display Error -->
+        <div class="bnomics-display-error">
+            <h2>{l s='Display Error'  mod='blockonomics'}{$id_order|escape:'htmlall':'UTF-8'}</h2>
+            <p>{l s='Unable to render correctly, Note to Administrator: Please contact blockonomics support for resolution.'  mod='blockonomics'}{$id_order|escape:'htmlall':'UTF-8'}</p>
+        </div>
+
+        <!-- Blockonomics Checkout Panel -->    
+        <div class="bnomics-order-panel">
+            <table>
+                <tr>
+                    <th class="bnomics-header">
+                        <!-- Order Header -->
+                        <span class="bnomics-order-id">
+                            {l s='Order #'  mod='blockonomics'}{$id_order|escape:'htmlall':'UTF-8'}
+                        </span>
+
+                        <div>
+                            <span class="blockonomics-icon-cart"></span>
+                            {$value|escape:'htmlall':'UTF-8'} {$currency_iso_code|escape:'htmlall':'UTF-8'}
+                        </div>
+                    </th>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <th>
+                        <!-- Order Address -->
+                        <label class="bnomics-address-text">{l s='To pay, send' mod='blockonomics'} {strtolower($crypto['name']|escape:'htmlall':'UTF-8')} {l s='to this address' mod='blockonomics'}</label>
+                        <label class="bnomics-copy-address-text">{l s='Copied to clipboard' mod='blockonomics'}</label>
+                        <div class="bnomics-copy-container">
+                            <input type="text" value="{$addr|escape:'htmlall':'UTF-8'}" id="bnomics-address-input" readonly/>
+                            <span id="bnomics-address-copy" class="blockonomics-icon-copy"></span>
+                            <span id="bnomics-show-qr" class="blockonomics-icon-qr"></span>
+                        </div>
+
+                        <div class="bnomics-qr-code">
+                            <div class="bnomics-qr">
+                                <a href="{$payment_uri|escape:'htmlall':'UTF-8'}" target="_blank" class="bnomics-qr-link">
+                                    <canvas id="bnomics-qr-code"></canvas>
+                                </a>
+                            </div>
+                            <small class="bnomics-qr-code-hint">
+                                <a href="{$payment_uri|escape:'htmlall':'UTF-8'}" target="_blank" class="bnomics-qr-link">{l s='Open in wallet' mod='blockonomics'}</a>
+                            </small>
+                        </div>
+                        </th>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <th>
+                        <label class="bnomics-amount-text">{l s='Amount of' mod='blockonomics'} {strtolower($crypto['name']|escape:'htmlall':'UTF-8')} ({strtoupper($crypto['code']|escape:'htmlall':'UTF-8')}) {l s='to send' mod='blockonomics'}</label>
+                        <label class="bnomics-copy-amount-text">{l s='Copied to clipboard' mod='blockonomics'}</label>
+
+                        <div class="bnomics-copy-container" id="bnomics-amount-copy-container">
+                            <input type="text" value="{$order_amount|escape:'htmlall':'UTF-8'}" id="bnomics-amount-input" readonly/>
+                            <span id="bnomics-amount-copy" class="blockonomics-icon-copy"></span>
+                            <span id="bnomics-refresh" class="blockonomics-icon-refresh"></span>
+                        </div>
+
+                        <small class="bnomics-crypto-price-timer">
+                            1 {strtoupper($crypto['code']|escape:'htmlall':'UTF-8')} = <span id="bnomics-crypto-rate">{$crypto_rate_str|escape:'htmlall':'UTF-8'}</span> {$currency_iso_code|escape:'htmlall':'UTF-8'} {l s='updates in' mod='blockonomics'} <span class="bnomics-time-left">00:00 min</span>
+                        </small>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function decodeEscapedHtml(text) {
+        return new DOMParser().parseFromString(text, 'text/html').documentElement.textContent
+    }
+
+    var blockonomics_data = JSON.stringify({
+        time_period: {$time_period|escape:'htmlall':'UTF-8'},
+        crypto:  JSON.parse('{$crypto|@json_encode|escape:'javascript':'UTF-8'}'.replaceAll('&quot;', '"')) ,
+        crypto_address: '{$addr|escape:'htmlall':'UTF-8'}',
+        finish_order_url: decodeEscapedHtml('{$redirect_link|escape:'htmlall':'UTF-8'}'),
+        payment_uri: '{$payment_uri|escape:'htmlall':'UTF-8'}',
+    })
+</script>
 {/block}
